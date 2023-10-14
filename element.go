@@ -131,8 +131,8 @@ const (
 	elementCategoryVolumeNumber
 	elementCategoryVolumePrefix
 	elementCategoryUnknown
-	elementCategoryAnimePart       // FIXME CHECK
-	elementCategoryAnimePartPrefix // FIXME CHECK
+	elementCategoryAnimePart
+	elementCategoryAnimePartPrefix
 )
 
 func (e *Elements) getCheckAltNumber() bool {
@@ -168,9 +168,9 @@ func (e *Elements) getSingleElementField(cat elementCategory) (bool, *string) {
 
 func (e *Elements) getMultiElementField(cat elementCategory) (bool, *[]string) {
 	switch cat {
-	case elementCategoryAnimePart: // FIXME CHECK
+	case elementCategoryAnimePart:
 		return true, &e.AnimePart
-	case elementCategoryAnimePartPrefix: // FIXME CHECK
+	case elementCategoryAnimePartPrefix:
 		return true, &e.AnimePartPrefix
 	case elementCategoryAnimeSeason:
 		return true, &e.AnimeSeason
@@ -307,7 +307,7 @@ func (e elementCategory) isSearchable() bool {
 
 func (e elementCategory) isSingular() bool {
 	nonSingularCategories := []elementCategory{
-		elementCategoryAnimePart, // FIXME CHECK
+		elementCategoryAnimePart,
 		elementCategoryAnimeSeason,
 		elementCategoryAnimeType,
 		elementCategoryAudioTerm,

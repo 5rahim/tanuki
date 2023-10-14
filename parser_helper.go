@@ -20,6 +20,27 @@ func (p *parser) checkAnimeSeasonKeyword(tkn *token) bool {
 	}
 
 	nextToken, found := p.tokenizer.tokens.findNext(*tkn, tokenFlagsNotDelimiter)
+
+	// Handle "Seasons 1-2" etc...
+	parts := strings.Split(nextToken.Content, "-")
+	if len(parts) != 2 {
+		parts = strings.Split(nextToken.Content, " - ")
+	} else if len(parts) != 2 {
+		parts = strings.Split(nextToken.Content, "~")
+	} else if len(parts) != 2 {
+		parts = strings.Split(nextToken.Content, " ~ ")
+	} else if len(parts) != 2 {
+		parts = strings.Split(nextToken.Content, "&")
+	} else if len(parts) != 2 {
+		parts = strings.Split(nextToken.Content, " & ")
+	}
+	if len(parts) == 2 {
+		if isNumeric(parts[0]) && isNumeric(parts[1]) {
+			p.setAnimeSeason(tkn, nextToken, parts[0])
+			p.setAnimeSeason(tkn, nextToken, parts[1])
+		}
+	}
+
 	if found && isNumeric(nextToken.Content) {
 		p.setAnimeSeason(tkn, nextToken, nextToken.Content)
 		return true

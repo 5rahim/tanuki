@@ -64,8 +64,8 @@ func newKeywordManager() *keywordManager {
 		fileExtensions: make(map[string]keyword),
 	}
 
-	kwm.add(elementCategoryAnimeSeasonPrefix, keywordOptionsUnidentifiable, []string{"S", "SAISON", "SEASON"})
-	kwm.add(elementCategoryAnimePartPrefix, keywordOptionsUnidentifiable, []string{"PARTS", "PART"}) // FIXME CHECK
+	kwm.add(elementCategoryAnimeSeasonPrefix, keywordOptionsUnidentifiable, []string{"S", "SAISON", "SEASON", "SEASONS", "SAISONS"})
+	kwm.add(elementCategoryAnimePartPrefix, keywordOptionsUnidentifiable, []string{"PARTS", "PART"})
 	kwm.add(elementCategoryAnimeType, keywordOptionsUnidentifiable, []string{
 		"GEKIJOUBAN", "MOVIE", "OAD", "OAV", "ONA", "OVA", "SPECIAL", "SPECIALS",
 		"TV", "番外編", "總集編", "映像特典", "特典", "特典アニメ"})
@@ -137,7 +137,7 @@ func newKeywordManager() *keywordManager {
 		// Video resolution
 		"HD", "SD"})
 	kwm.add(elementCategoryVolumePrefix, keywordOptionsDefault, []string{
-		"VOL", "VOL.", "VOLUME"})
+		"VOL", "VOL.", "VOLUME", "VOLUMES"})
 
 	return kwm
 }
