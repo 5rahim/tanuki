@@ -2,7 +2,7 @@
 
 Tanuki is a Golang library for parsing anime video filenames. 
 
-It is a **fork** of [Anitogo](https://github.com/eemj/anitogo), which itself is based off of [Anitomy](https://github.com/erengy/anitomy) and [Anitopy](https://github.com/igorcmoura/anitopy).
+It is a **fork** of [Anitogo](https://github.com/nssteinbrenner/anitogo), which itself is based off of [Anitomy](https://github.com/erengy/anitomy) and [Anitopy](https://github.com/igorcmoura/anitopy).
 
 ## Changes
 
