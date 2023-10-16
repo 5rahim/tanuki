@@ -191,6 +191,7 @@ func (p *parser) searchForEpisodeNumberAtTheStart() {
 
 		// is first token, is at least 2 characters long
 		// episode number has not been parsed
+		// /!\ This could cause problems
 		if found && len(tkn.Content) > 1 && prev.Content == tkn.Content && !p.tokenizer.elements.contains(elementCategoryEpisodeNumber) {
 			p.tokenizer.elements.insert(elementCategoryEpisodeNumber, tkn.Content)
 			tkn.Category = tokenCategoryIdentifier

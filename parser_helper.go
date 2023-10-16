@@ -38,8 +38,12 @@ func (p *parser) checkAnimeSeasonKeyword(tkn *token) bool {
 				a, foundA := md["a"]
 				b, foundB := md["b"]
 				if foundA && foundB {
-					p.setAnimeSeason(tkn, nextToken, a)
-					p.setAnimeSeason(tkn, nextToken, b)
+					lowerBound, _ := strconv.Atoi(a)
+					upperBound, _ := strconv.Atoi(b)
+					if lowerBound < upperBound {
+						p.setAnimeSeason(tkn, nextToken, a)
+						p.setAnimeSeason(tkn, nextToken, b)
+					}
 				}
 
 			}

@@ -364,10 +364,7 @@
     ]
   },
   {
-    "anime_title": "Eve no Jikan",
-    "episode_number": [
-      "2"
-    ],
+    "anime_title": "Eve no Jikan 2",
     "file_checksum": "88F4F7F0",
     "file_extension": "mkv",
     "file_name": "Eve no Jikan 2 [88F4F7F0].mkv"
@@ -601,14 +598,10 @@
     ]
   },
   {
-    "anime_title": "Kiddy Grade",
+    "anime_title": "Kiddy Grade 2 - Pilot",
     "audio_term": [
       "AC3"
     ],
-    "episode_number": [
-      "2"
-    ],
-    "episode_title": "Pilot",
     "file_checksum": "650B731B",
     "file_extension": "mkv",
     "file_name": "[Ayu]_Kiddy_Grade_2_-_Pilot_[H264_AC3][650B731B].mkv",
@@ -1492,12 +1485,9 @@
     ]
   },
   {
-    "anime_title": "Rozen Maiden",
+    "anime_title": "Rozen Maiden 3 - PV",
     "anime_type": [
       "PV"
-    ],
-    "episode_number": [
-      "3"
     ],
     "file_checksum": "CA57F300",
     "file_extension": "mkv",
@@ -2113,15 +2103,11 @@
     "video_resolution": "720p"
   },
   {
-    "anime_title": "Byousoku",
+    "anime_title": "Byousoku 5 Centimeter",
     "audio_term": [
       "2.0ch",
       "AAC"
     ],
-    "episode_number": [
-      "5"
-    ],
-    "episode_title": "Centimeter",
     "file_name": "Byousoku 5 Centimeter [Blu-Ray][1920x1080 H.264][2.0ch AAC][SOFTSUBS]",
     "source": [
       "Blu-Ray"
@@ -2655,6 +2641,9 @@
     ],
     "anime_season": [
       "01"
+    ],
+    "release_version": [
+      "2"
     ],
     "file_name": "[Erai-raws] Blue Lock - S01E01v2 [720p][Multiple Subtitle]",
     "release_group": "Erai-raws",

@@ -93,6 +93,7 @@ func (p *parser) numberComesAfterPrefix(cat elementCategory, tkn *token) bool {
 	return false
 }
 
+// e.g, "1 of 2", "3 & 5"
 func (p *parser) numberComesBeforeAnotherNumber(tkn *token) bool {
 	separatorToken, found := p.tokenizer.tokens.findNext(*tkn, tokenFlagsNotDelimiter)
 
@@ -114,6 +115,7 @@ func (p *parser) numberComesBeforeAnotherNumber(tkn *token) bool {
 	return false
 }
 
+// e.g, "25 (01)"
 func (p *parser) searchForEquivalentNumbers(tkns tokens) bool {
 	for _, tkn := range tkns {
 		if p.tokenizer.tokens.isTokenIsolated(*tkn) || !isValidEpisodeNumber(tkn.Content) {
@@ -131,6 +133,7 @@ func (p *parser) searchForEquivalentNumbers(tkns tokens) bool {
 			}
 		}
 
+		// Do not consider "25 01", "25 a"
 		if !p.tokenizer.tokens.isTokenIsolated(*nextToken) || !isNumeric(nextToken.Content) || !isValidEpisodeNumber(nextToken.Content) {
 			continue
 		}
@@ -152,6 +155,7 @@ func (p *parser) searchForEquivalentNumbers(tkns tokens) bool {
 	return false
 }
 
+// e.g, "- 01"
 func (p *parser) searchForSeparatedNumbers(tkns tokens) bool {
 	for _, tkn := range tkns {
 		previousToken, found := p.tokenizer.tokens.findPrevious(*tkn, tokenFlagsNotDelimiter)
@@ -169,6 +173,7 @@ func (p *parser) searchForSeparatedNumbers(tkns tokens) bool {
 	return false
 }
 
+// e.g, " 05 "
 func (p *parser) searchForIsolatedNumbersTokens(tkns tokens) bool {
 	for _, tkn := range tkns {
 		if !tkn.Enclosed || !p.tokenizer.tokens.isTokenIsolated(*tkn) {
@@ -207,10 +212,18 @@ func (p *parser) searchForLastNumber(tkns tokens) bool {
 
 		previousToken, _ := p.tokenizer.tokens.findPrevious(*tkn, tokenFlagsNotDelimiter)
 		if previousToken.Category == tokenCategoryUnknown {
+			// Do not consider number when previous token is "Movie" or "Part"
+			// e.g, Avoid "Movie 9", "Part 10", etc...
 			if strings.ToUpper(previousToken.Content) == "MOVIE" || strings.ToUpper(previousToken.Content) == "PART" {
 				continue
 			}
 		}
+
+		// e.g, Avoid "Rozen Maiden 3"
+		if len(tkn.Content) == 1 {
+			continue
+		}
+
 		if p.setEpisodeNumber(tkn.Content, tkn, true) {
 			return true
 		}
@@ -388,6 +401,11 @@ func (p *parser) matchSeasonAndEpisodePattern(w string, tkn *token) bool {
 		return false
 	}
 
+	// Do not consider cases like "0x500"
+	if len(match[1]) == 1 && len(match[3]) >= 3 {
+		return false
+	}
+
 	p.tokenizer.elements.insert(elementCategoryAnimeSeason, match[1])
 	if len(match[2]) > 0 {
 		p.tokenizer.elements.insert(elementCategoryAnimeSeason, match[2])
@@ -395,6 +413,9 @@ func (p *parser) matchSeasonAndEpisodePattern(w string, tkn *token) bool {
 	p.setEpisodeNumber(match[3], tkn, false)
 	if len(match[4]) > 0 {
 		p.setEpisodeNumber(match[4], tkn, false)
+	}
+	if len(match[5]) > 0 {
+		p.tokenizer.elements.insert(elementCategoryReleaseVersion, match[5])
 	}
 	return true
 }
@@ -499,7 +520,7 @@ func (p *parser) matchJapaneseCounterPattern(w string, tkn *token) bool {
 }
 
 func (p *parser) matchApostropheVersioning(w string, tkn *token) bool {
-	if !strings.Contains(w, "'") {
+	if strings.IndexRune(w, '\u0027') == -1 {
 		return false
 	}
 

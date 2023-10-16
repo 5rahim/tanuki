@@ -8,13 +8,16 @@ It is a **fork** of [Anitogo](https://github.com/nssteinbrenner/anitogo), which 
 
 Tanuki simply handles more cases while avoiding regression.
 
-Changes:
 - Added `anime_part`
 - Better parsing of `anime_title`
 - Updated keywords
+- Fixes:
+  - Incorrect episode detection, e.g, now: `Rozen Maiden 3` != `episode 3`, `Byousoku 5 Centimeter` != `episode 5`
+  - Incorrect versioning detection, e.g, `S01E01v2`, `- 05'` are parsed correctly now
 - Support for:
+  - Higher episode numbers
   - Absence of title, e.g, `S01E05 - Episode title.mkv`
-  - More ranges, e.g, `S1-2`, `Seasons 1-2`, `Seasons 1 ~ 2`, etc...
+  - Season ranges, e.g, `S1-2`, `Seasons 1-2`, `Seasons 1 ~ 2`, etc...
   - Enclosed keywords, e.g, `Hyouka (2012) [Season 1+OVA] [BD 1080p HEVC OPUS] [Dual-Audio]`
 
 ## Example
