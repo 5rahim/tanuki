@@ -276,6 +276,7 @@ func (e *Elements) get(cat elementCategory) []string {
 	return *targetMulti
 }
 
+// If the element is part of these categories
 func (e elementCategory) isSearchable() bool {
 	searchableCategories := []elementCategory{
 		elementCategoryAnimeSeasonPrefix,

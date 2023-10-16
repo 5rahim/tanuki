@@ -19,6 +19,10 @@ func newParser(tkz *tokenizer) *parser {
 
 // Parse order
 func (p *parser) parse() {
+	p.preProcessing()
+
+	p.searchForShortenedRange()
+
 	p.searchForKeywords()
 
 	p.searchForIsolatedNumbers()
@@ -42,14 +46,51 @@ func (p *parser) parse() {
 	p.postProcessing()
 }
 
+func (p *parser) preProcessing() {
+	for _, tkn := range p.tokenizer.tokens.getListFlag(tokenFlagsUnknown) {
+		// Pre-processing
+		// Check if the word is combined with another word like "1+OVA" which happens often
+		parts := strings.Split(tkn.Content, "+")
+		if len(parts) == 2 {
+			// if first part is a number \d{1,2} and the second part is not
+			// this makes sure we don't "un-unite" ranges
+			if isNumeric(parts[0]) && len(parts[0]) <= 2 && !isNumeric(parts[1]) {
+				tkn.Content = parts[0]
+				p.tokenizer.addToken(tokenFlagsUnknown, parts[1], true)
+			}
+		}
+
+	}
+}
+
+// Handle "S1-2" etc...
+func (p parser) searchForShortenedRange() {
+	for _, tkn := range p.tokenizer.tokens.getListFlag(tokenFlagsUnknown) {
+
+		if len(tkn.Content) > 3 {
+			if tkn.Content[0] == 'S' {
+				seasonRe := regexp.MustCompile(`[Ss](?P<a>\d{1,2})[-&~](?P<b>\d{1,2})`)
+				seasonMatch := seasonRe.FindAllStringSubmatch(tkn.Content, -1)
+				if seasonMatch != nil {
+					p.checkAnimeSeasonKeyword(tkn)
+				}
+			}
+		}
+
+	}
+}
+
+// From the entire list of tokens, find specific keywords
 func (p *parser) searchForKeywords() {
 	for _, tkn := range p.tokenizer.tokens.getListFlag(tokenFlagsUnknown) {
+
 		w := tkn.Content
 		w = strings.Trim(w, " -")
 
 		if w == "" {
 			continue
 		}
+
 		// Don't bother if the word is a number that cannot be CRC
 		if len(w) != 8 && isNumeric(w) {
 			continue
@@ -62,20 +103,22 @@ func (p *parser) searchForKeywords() {
 			if !p.tokenizer.options.ParseReleaseGroup && category == elementCategoryReleaseGroup {
 				continue
 			}
+			// Skip If the category of the keyword is searchable but the keyword itself isn't
 			if !category.isSearchable() || !kd.options.searchable {
 				continue
 			}
+			// Skip If the category is singular
 			if category.isSingular() && p.tokenizer.elements.contains(category) {
 				continue
 			}
 
-			if category == elementCategoryAnimeSeasonPrefix {
+			if category == elementCategoryAnimeSeasonPrefix { // Season X, Seasons X, Xth season,...
 				p.checkAnimeSeasonKeyword(tkn)
 				continue
-			} else if category == elementCategoryAnimePartPrefix {
+			} else if category == elementCategoryAnimePartPrefix { // Part X
 				p.checkAnimePartKeyword(tkn)
 				continue
-			} else if category == elementCategoryEpisodePrefix {
+			} else if category == elementCategoryEpisodePrefix { // Ep X
 				if kd.options.valid {
 					p.checkExtentKeyword(elementCategoryEpisodeNumber, tkn)
 				}
@@ -306,6 +349,29 @@ func (p *parser) searchForReleaseGroup() {
 		}
 
 		tokenEnd, _ = p.tokenizer.tokens.findPrevious(*tokenEnd, tokenFlagsValid)
+
+		list := p.tokenizer.tokens.getList(tokenFlagsValid, tokenBegin, tokenEnd)
+
+		for _, tk := range list {
+			// If "Season" "Part" "EP" is found inside, process it accordingly
+			_, foundS := p.tokenizer.keywordManager.find(p.tokenizer.keywordManager.normalize(tk.Content), elementCategoryAnimeSeasonPrefix)
+			_, foundP := p.tokenizer.keywordManager.find(p.tokenizer.keywordManager.normalize(tk.Content), elementCategoryAnimePartPrefix)
+			_, foundE := p.tokenizer.keywordManager.find(p.tokenizer.keywordManager.normalize(tk.Content), elementCategoryEpisodePrefix)
+			if foundS || foundP || foundE {
+				// Remove brackets
+				tokenBegin.Category = tokenCategoryInvalid
+				tokenEnd.Category = tokenCategoryInvalid
+				if foundS {
+					p.checkAnimeSeasonKeyword(tk)
+				} else if foundP {
+					p.checkAnimePartKeyword(tk)
+				} else if foundE {
+					p.searchForEpisodeNumber()
+				}
+				return
+			}
+		}
+
 		p.buildElement(elementCategoryReleaseGroup, tokenBegin, tokenEnd, true)
 		return
 	}
@@ -425,4 +491,5 @@ func (p *parser) postProcessing() {
 		}
 
 	}
+
 }

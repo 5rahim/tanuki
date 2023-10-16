@@ -2850,5 +2850,42 @@
       "x265",
       "10bit"
     ]
+  },
+  {
+    "anime_season": [
+      "1"
+    ],
+    "anime_title": "Hyouka",
+    "anime_year": "2012",
+    "audio_term": [
+      "Dual-Audio"
+    ],
+    "file_name": "Hyouka (2012) [Season 1+OVA] [BD 1080p HEVC OPUS] [Dual-Audio]",
+    "source": [
+      "BD"
+    ],
+    "video_resolution": "1080p",
+    "video_term": [
+      "HEVC"
+    ]
+  },
+  {
+    "anime_season": [
+      "1",
+      "2"
+    ],
+    "anime_title": "Hyouka",
+    "anime_year": "2012",
+    "audio_term": [
+      "Dual-Audio"
+    ],
+    "file_name": "Hyouka (2012) S1-2 [BD 1080p HEVC OPUS] [Dual-Audio]",
+    "source": [
+      "BD"
+    ],
+    "video_resolution": "1080p",
+    "video_term": [
+      "HEVC"
+    ]
   }
 ]

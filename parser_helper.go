@@ -8,8 +8,11 @@ import (
 )
 
 const dashes = "-\u2010\u2011\u2012\u2013\u2014\u2015"
+const separators = "&~-\u2010\u2011\u2012\u2013\u2014\u2015"
 
 func (p *parser) checkAnimeSeasonKeyword(tkn *token) bool {
+
+	// Handle "4th Season", etc...
 	prevToken, found := p.tokenizer.tokens.findPrevious(*tkn, tokenFlagsNotDelimiter)
 	if found {
 		num := getNumberFromOrdinal(prevToken.Content)
@@ -21,28 +24,72 @@ func (p *parser) checkAnimeSeasonKeyword(tkn *token) bool {
 
 	nextToken, found := p.tokenizer.tokens.findNext(*tkn, tokenFlagsNotDelimiter)
 
-	// Handle "Seasons 1-2" etc...
-	parts := strings.Split(nextToken.Content, "-")
-	if len(parts) != 2 {
-		parts = strings.Split(nextToken.Content, " - ")
-	} else if len(parts) != 2 {
-		parts = strings.Split(nextToken.Content, "~")
-	} else if len(parts) != 2 {
-		parts = strings.Split(nextToken.Content, " ~ ")
-	} else if len(parts) != 2 {
-		parts = strings.Split(nextToken.Content, "&")
-	} else if len(parts) != 2 {
-		parts = strings.Split(nextToken.Content, " & ")
-	}
-	if len(parts) == 2 {
-		if isNumeric(parts[0]) && isNumeric(parts[1]) {
-			p.setAnimeSeason(tkn, nextToken, parts[0])
-			p.setAnimeSeason(tkn, nextToken, parts[1])
+	if len(tkn.Content) > 3 {
+		if tkn.Content[0] == 'S' {
+			// "S1-2" "S1&2" "S1~2" "S1-S2"
+			seasonRe := regexp.MustCompile(`[Ss](?P<a>\d{1,2})[-&~](?P<b>\d{1,2})`)
+			n1 := seasonRe.SubexpNames()
+			r2 := seasonRe.FindAllStringSubmatch(tkn.Content, -1)
+			if r2 != nil {
+				md := map[string]string{}
+				for i, n := range r2[0] {
+					md[n1[i]] = n
+				}
+				a, foundA := md["a"]
+				b, foundB := md["b"]
+				if foundA && foundB {
+					p.setAnimeSeason(tkn, nextToken, a)
+					p.setAnimeSeason(tkn, nextToken, b)
+				}
+
+			}
 		}
 	}
 
+	if found {
+		// Handle "Seasons 1-2", etc...
+		// If next token is either "1-2", "1~2", "1&2"
+		parts := strings.Split(nextToken.Content, "-")
+		if len(parts) != 2 {
+			parts = strings.Split(nextToken.Content, "~")
+		} else if len(parts) != 2 {
+			parts = strings.Split(nextToken.Content, "&")
+		}
+		if len(parts) == 2 {
+			// Make sure the length matches. e.g, 1-2, 01-02, 001-002
+			if len(parts[0]) == len(parts[1]) && isNumeric(parts[0]) && isNumeric(parts[1]) {
+				p.setAnimeSeason(tkn, nextToken, parts[0])
+				p.setAnimeSeason(tkn, nextToken, parts[1])
+			}
+		}
+
+	}
+
 	if found && isNumeric(nextToken.Content) {
-		p.setAnimeSeason(tkn, nextToken, nextToken.Content)
+
+		// First check if there might be a range
+		// Handle "Seasons 1 - 2", etc...
+		// We don't consider "01 - 05" because this could accidentally capture the episode number
+		rangeDelimiter, found := p.tokenizer.tokens.findNext(*nextToken, tokenFlagsNotDelimiter)
+		skip := false
+
+		if found {
+			if isSeparatorCharacter(rangeDelimiter.Content) {
+				nextUpToken, found := p.tokenizer.tokens.findNext(*rangeDelimiter, tokenFlagsNotDelimiter)
+				if found {
+					if len(nextToken.Content) == 1 && len(nextUpToken.Content) == 1 && isNumeric(nextUpToken.Content) {
+						p.setAnimeSeason(tkn, nextToken, nextToken.Content)
+						p.setAnimeSeason(tkn, nextUpToken, nextUpToken.Content)
+						skip = true
+					}
+				}
+			}
+		}
+
+		if !skip {
+			p.setAnimeSeason(tkn, nextToken, nextToken.Content)
+		}
+
 		return true
 	}
 	return false
@@ -75,15 +122,9 @@ func (p *parser) checkAnimePartKeyword(tkn *token) bool {
 	// Handle "Parts 1-2" etc...
 	parts := strings.Split(nextToken.Content, "-")
 	if len(parts) != 2 {
-		parts = strings.Split(nextToken.Content, " - ")
-	} else if len(parts) != 2 {
 		parts = strings.Split(nextToken.Content, "~")
 	} else if len(parts) != 2 {
-		parts = strings.Split(nextToken.Content, " ~ ")
-	} else if len(parts) != 2 {
 		parts = strings.Split(nextToken.Content, "&")
-	} else if len(parts) != 2 {
-		parts = strings.Split(nextToken.Content, " & ")
 	}
 	if len(parts) == 2 {
 		if isNumeric(parts[0]) && isNumeric(parts[1]) {
@@ -93,7 +134,30 @@ func (p *parser) checkAnimePartKeyword(tkn *token) bool {
 	}
 
 	if found && isNumeric(nextToken.Content) {
-		p.setAnimePart(tkn, nextToken, nextToken.Content)
+
+		// First check if there might be a range
+		// Handle "Parts 1 - 2", etc...
+		// We don't consider "01 - 05" because this could accidentally capture the episode number
+		rangeDelimiter, found := p.tokenizer.tokens.findNext(*nextToken, tokenFlagsNotDelimiter)
+		skip := false
+
+		if found {
+			if isSeparatorCharacter(rangeDelimiter.Content) {
+				nextUpToken, found := p.tokenizer.tokens.findNext(*rangeDelimiter, tokenFlagsNotDelimiter)
+				if found {
+					if len(nextToken.Content) == 1 && len(nextUpToken.Content) == 1 && isNumeric(nextUpToken.Content) {
+						p.setAnimePart(tkn, nextToken, nextToken.Content)
+						p.setAnimePart(tkn, nextUpToken, nextUpToken.Content)
+						skip = true
+					}
+				}
+			}
+		}
+
+		if !skip {
+			p.setAnimePart(tkn, nextToken, nextToken.Content)
+		}
+
 		return true
 	}
 	return false
@@ -156,6 +220,18 @@ func isDashCharacter(str string) bool {
 		return false
 	}
 	for _, dash := range dashes {
+		if str == string(dash) {
+			return true
+		}
+	}
+	return false
+}
+
+func isSeparatorCharacter(str string) bool {
+	if len(str) != 1 {
+		return false
+	}
+	for _, dash := range separators {
 		if str == string(dash) {
 			return true
 		}

@@ -4,14 +4,18 @@ Tanuki is a Golang library for parsing anime video filenames.
 
 It is a **fork** of [Anitogo](https://github.com/eemj/anitogo), which itself is based off of [Anitomy](https://github.com/erengy/anitomy) and [Anitopy](https://github.com/igorcmoura/anitopy).
 
-## Why?
+## Changes
 
-Tanuki simply handles more cases while remaining backward compatible.
+Tanuki simply handles more cases while avoiding regression.
 
 Changes:
 - Added `anime_part`
 - Better parsing of `anime_title`
-- Support for `S01E05 - Episode title.mkv`
+- Updated keywords
+- Support for:
+  - Absence of title, e.g, `S01E05 - Episode title.mkv`
+  - More ranges, e.g, `S1-2`, `Seasons 1-2`, `Seasons 1 ~ 2`, etc...
+  - Enclosed keywords, e.g, `Hyouka (2012) [Season 1+OVA] [BD 1080p HEVC OPUS] [Dual-Audio]`
 
 ## Example
 The following filename...

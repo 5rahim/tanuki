@@ -82,7 +82,7 @@ func newKeywordManager() *keywordManager {
 		"FLACX2", "FLACX3", "FLACX4", "LOSSLESS", "MP3", "OGG", "VORBIS",
 		"DD2", "DD2.0",
 		// Audio language
-		"DUALAUDIO", "DUAL AUDIO"})
+		"DUALAUDIO", "DUAL-AUDIO"})
 	kwm.add(elementCategoryDeviceCompatibility, keywordOptionsDefault, []string{
 		"IPAD3", "IPHONE5", "IPOD", "PS3", "XBOX", "XBOX360"})
 	kwm.add(elementCategoryDeviceCompatibility, keywordOptionsUnidentifiable, []string{
@@ -106,7 +106,7 @@ func newKeywordManager() *keywordManager {
 		"REMASTER", "REMASTERED", "UNCENSORED", "UNCUT", "TS", "VFR",
 		"WIDESCREEN", "WS"})
 	kwm.add(elementCategoryReleaseGroup, keywordOptionsDefault, []string{
-		"THORA", "HORRIBLESUBS", "ERAI-RAWS"})
+		"THORA", "HORRIBLESUBS", "ERAI-RAWS", "SUBSPLEASE"})
 	kwm.add(elementCategoryReleaseInformation, keywordOptionsDefault, []string{
 		"BATCH", "COMPLETE", "PATCH", "REMUX"})
 	kwm.add(elementCategoryReleaseInformation, keywordOptionsUnidentifiable, []string{
@@ -120,7 +120,7 @@ func newKeywordManager() *keywordManager {
 		"WEBCAST", "WEBRIP"})
 	kwm.add(elementCategorySubtitles, keywordOptionsDefault, []string{
 		"ASS", "BIG5", "DUB", "DUBBED", "HARDSUB", "HARDSUBS", "RAW",
-		"SOFTSUB", "SOFTSUBS", "SUB", "SUBBED", "SUBTITLED"})
+		"SOFTSUB", "SOFTSUBS", "SUB", "SUBBED", "SUBTITLED", "MULTISUB"})
 	kwm.add(elementCategoryVideoTerm, keywordOptionsDefault, []string{
 		// Frame rate
 		"23.976FPS", "24FPS", "29.97FPS", "30FPS", "60FPS", "120FPS",
@@ -130,12 +130,13 @@ func newKeywordManager() *keywordManager {
 		"H264", "H265", "H.264", "H.265", "X264", "X265", "X.264",
 		"AVC", "HEVC", "HEVC2", "DIVX", "DIVX5", "DIVX6", "XVID",
 		"AV1",
+		"HDR", "DV", "DOLBY VISION",
 		// Video format
 		"AVI", "RMVB", "WMV", "WMV3", "WMV9",
 		// Video quality
 		"HQ", "LQ",
 		// Video resolution
-		"HD", "SD"})
+		"HD", "SD", "4K"})
 	kwm.add(elementCategoryVolumePrefix, keywordOptionsDefault, []string{
 		"VOL", "VOL.", "VOLUME", "VOLUMES"})
 
@@ -162,6 +163,7 @@ func (kwm *keywordManager) add(cat elementCategory, opt keywordOption, keywords 
 	}
 }
 
+// Take a word and return the keyword value
 func (kwm *keywordManager) find(word string, cat elementCategory) (keyword, bool) {
 	if cat != elementCategoryFileExtension {
 		v, ok := kwm.keywords[word]
@@ -177,6 +179,7 @@ func (kwm *keywordManager) find(word string, cat elementCategory) (keyword, bool
 	return keyword{}, false
 }
 
+// Take a word and return the keyword value without knowing its category
 func (kwm *keywordManager) findWithoutCategory(word string) (keyword, bool) {
 	v, ok := kwm.keywords[word]
 	if ok {
@@ -193,7 +196,7 @@ func (kwm *keywordManager) peek(word string, e *Elements) indexSets {
 	entries := map[elementCategory][]string{
 		elementCategoryAudioTerm:       {"Dual Audio", "DualAudio"},
 		elementCategoryVideoTerm:       {"H264", "H.264", "h264", "h.264"},
-		elementCategoryVideoResolution: {"480p", "720p", "1080p"},
+		elementCategoryVideoResolution: {"480p", "720p", "1080p", "2160p"},
 		elementCategorySource:          {"Blu-Ray"},
 	}
 
