@@ -13,6 +13,7 @@ type failedParse struct {
 }
 
 func TestTanukiParse(t *testing.T) {
+	os.Setenv("TANUKI_DATA_PATH", "./test/data.json")
 	testDataPath := os.Getenv("TANUKI_DATA_PATH")
 	if testDataPath == "" {
 		t.Fatal("Missing TANUKI_DATA_PATH environment variable for json test data file")

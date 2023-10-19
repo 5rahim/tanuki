@@ -456,6 +456,16 @@ func (p *parser) postProcessing() {
 		if match != nil {
 			p.tokenizer.elements.erase(elementCategoryAnimeTitle)
 			p.tokenizer.elements.insert(elementCategoryEpisodeTitle, match[1])
+		} else {
+			re := regexp.MustCompile(`^[._+-]?\d+[._+-]$`) // e.g., `- and everything after that dash`
+			match := re.FindStringSubmatch(animeTitle)
+			if match != nil {
+				i := extractNumbersFromString(match[0])
+				if len(i) > 0 {
+					p.tokenizer.elements.erase(elementCategoryAnimeTitle)
+					p.tokenizer.elements.insert(elementCategoryEpisodeNumber, i)
+				}
+			}
 		}
 	}
 

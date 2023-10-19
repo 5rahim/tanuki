@@ -316,3 +316,15 @@ func findNumberInString(str string) int {
 	}
 	return -1
 }
+
+func extractNumbersFromString(str string) string {
+	var numericStr string
+
+	for _, char := range str {
+		if char >= '0' && char <= '9' {
+			numericStr += string(char)
+		}
+	}
+
+	return numericStr
+}

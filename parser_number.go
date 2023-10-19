@@ -52,6 +52,9 @@ func (p *parser) searchForEpisodePatterns(tkns tokens) bool {
 			if p.numberComesAfterPrefix(elementCategoryAnimeSeasonPrefix, tkn) {
 				continue
 			}
+			if p.numberComesAfterPrefix(elementCategoryAnimePartPrefix, tkn) {
+				continue
+			}
 		} else {
 			if p.numberComesBeforeAnotherNumber(tkn) {
 				return true
@@ -189,6 +192,12 @@ func (p *parser) searchForIsolatedNumbersTokens(tkns tokens) bool {
 func (p *parser) searchForLastNumber(tkns tokens) bool {
 	for _, tkn := range tkns {
 		tokenIndex := p.tokenizer.tokens.getIndex(*tkn, 0)
+
+		// If there are more than 2 numbers remaining after all previous tries, do nothing
+		// e,g. This avoids accidentally concerning ourselves with "Zom 100 Zombie ni Naru Made ni Shitai 100 no Koto"
+		if len(tkns) >= 2 {
+			continue
+		}
 
 		if tokenIndex == 0 {
 			continue
