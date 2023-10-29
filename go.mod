@@ -1,4 +1,4 @@
-module github.com/seanime-app/tanuki
+module github.com/5rahim/tanuki
 
 go 1.21
 

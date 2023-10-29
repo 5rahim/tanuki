@@ -1,4 +1,4 @@
-# Tanuki
+# 🦝 Tanuki
 
 Tanuki is a Golang library for parsing anime video filenames. 
 
@@ -8,10 +8,76 @@ It is a **fork** of [Anitogo](https://github.com/nssteinbrenner/anitogo), which 
 
 Tanuki simply handles more cases while avoiding regression.
 
+### Anitogo
+```json
+ {
+  "file_name": "Byousoku 5 Centimeter [Blu-Ray][1920x1080 H.264][2.0ch AAC][SOFTSUBS]",
+  "anime_title": "Byousoku",
+  "episode_number": ["5"],
+  "episode_title": "Centimeter",
+  ...
+}
+```
+
+### 🦝 Tanuki
+```json
+{
+  "file_name": "Byousoku 5 Centimeter [Blu-Ray][1920x1080 H.264][2.0ch AAC][SOFTSUBS]",
+  "anime_title": "Byousoku 5 Centimeter",
+  ...
+}
+```
+
+---
+
+### Anitogo
+```json
+ {
+  "file_name": "S01E05 - Episode title.mkv",
+  "anime_title": "S01E05 - Episode title",
+  ...
+}
+```
+
+### 🦝 Tanuki
+```json
+{
+  "file_name": "S01E05 - Episode title.mkv",
+  "anime_season": ["01"],
+  "episode_number": ["05"],
+  "episode_title": "Episode title",
+  ...
+}
+```
+
+---
+
+### Anitogo
+```json
+ {
+  "file_name": "[Judas] Aharen-san wa Hakarenai - S01E06v2.mkv",
+  "anime_title": "Aharen-san wa Hakarenai - S01E06v2",
+  ...
+}
+```
+
+### 🦝 Tanuki
+```json
+{
+  "file_name": "[Judas] Aharen-san wa Hakarenai - S01E06v2.mkv",
+  "anime_title": "Aharen-san wa Hakarenai",
+  "anime_season": ["01"],
+  "episode_number": ["06"],
+  ...
+}
+```
+
+---
+
 - Added `anime_part`
 - Better parsing of `anime_title`
 - Updated keywords
-- Fixes:
+- Fixed:
   - Incorrect episode detection, e.g, now: `Rozen Maiden 3` != `episode 3`, `Byousoku 5 Centimeter` != `episode 5`
   - Incorrect versioning detection, e.g, `S01E01v2`, `- 05'` are parsed correctly now
 - Support for:
@@ -19,6 +85,8 @@ Tanuki simply handles more cases while avoiding regression.
   - Absence of title, e.g, `S01E05 - Episode title.mkv`
   - Season ranges, e.g, `S1-2`, `Seasons 1-2`, `Seasons 1 ~ 2`, etc...
   - Enclosed keywords, e.g, `Hyouka (2012) [Season 1+OVA] [BD 1080p HEVC OPUS] [Dual-Audio]`
+
+---
 
 ## Example
 The following filename...
@@ -49,7 +117,7 @@ import (
     "fmt"
     "encoding/json"
 
-    "github.com/seanime-app/tanuki"
+    "github.com/5rahim/tanuki"
 )
 
 func main() {
@@ -125,11 +193,11 @@ Sample results encoded in JSON can be seen in the tests/data.json file.
 ## Installation
 Get the package:
 
-    go get -u github.com/seanime-app/tanuki
+    go get -u github.com/5rahim/tanuki
 
 Then, import it in your code:
 
-    import "github.com/seanime-app/tanuki"
+    import "github.com/5rahim/tanuki"
 
 ## Options
 The Parse function receives the filename and an Options struct. The default options are as follows:
