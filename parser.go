@@ -358,7 +358,8 @@ func (p *parser) searchForReleaseGroup() {
 			_, foundS := p.tokenizer.keywordManager.find(p.tokenizer.keywordManager.normalize(tk.Content), elementCategoryAnimeSeasonPrefix)
 			_, foundP := p.tokenizer.keywordManager.find(p.tokenizer.keywordManager.normalize(tk.Content), elementCategoryAnimePartPrefix)
 			_, foundE := p.tokenizer.keywordManager.find(p.tokenizer.keywordManager.normalize(tk.Content), elementCategoryEpisodePrefix)
-			if foundS || foundP || foundE {
+			_, foundAT := p.tokenizer.keywordManager.find(p.tokenizer.keywordManager.normalize(tk.Content), elementCategoryAnimeType)
+			if foundS || foundP || foundE || foundAT {
 				// Remove brackets
 				tokenBegin.Category = tokenCategoryInvalid
 				tokenEnd.Category = tokenCategoryInvalid
@@ -368,6 +369,9 @@ func (p *parser) searchForReleaseGroup() {
 					p.checkAnimePartKeyword(tk)
 				} else if foundE {
 					p.searchForEpisodeNumber()
+				} else if foundAT {
+					p.tokenizer.elements.insert(elementCategoryAnimeType, tk.Content)
+					tk.Category = tokenCategoryIdentifier
 				}
 				return
 			}

@@ -9,7 +9,7 @@ It is a **fork** of [Anitogo](https://github.com/nssteinbrenner/anitogo), which 
 Tanuki simply handles more cases while avoiding regression.
 
 ### Anitogo
-```json
+```txt
  {
   "file_name": "Byousoku 5 Centimeter [Blu-Ray][1920x1080 H.264][2.0ch AAC][SOFTSUBS]",
   "anime_title": "Byousoku",
@@ -20,7 +20,7 @@ Tanuki simply handles more cases while avoiding regression.
 ```
 
 ### 🦝 Tanuki
-```json
+```txt
 {
   "file_name": "Byousoku 5 Centimeter [Blu-Ray][1920x1080 H.264][2.0ch AAC][SOFTSUBS]",
   "anime_title": "Byousoku 5 Centimeter",
@@ -31,7 +31,7 @@ Tanuki simply handles more cases while avoiding regression.
 ---
 
 ### Anitogo
-```json
+```txt
  {
   "file_name": "S01E05 - Episode title.mkv",
   "anime_title": "S01E05 - Episode title",
@@ -40,7 +40,7 @@ Tanuki simply handles more cases while avoiding regression.
 ```
 
 ### 🦝 Tanuki
-```json
+```txt
 {
   "file_name": "S01E05 - Episode title.mkv",
   "anime_season": ["01"],
@@ -53,7 +53,7 @@ Tanuki simply handles more cases while avoiding regression.
 ---
 
 ### Anitogo
-```json
+```txt
  {
   "file_name": "[Judas] Aharen-san wa Hakarenai - S01E06v2.mkv",
   "anime_title": "Aharen-san wa Hakarenai - S01E06v2",
@@ -62,7 +62,7 @@ Tanuki simply handles more cases while avoiding regression.
 ```
 
 ### 🦝 Tanuki
-```json
+```txt
 {
   "file_name": "[Judas] Aharen-san wa Hakarenai - S01E06v2.mkv",
   "anime_title": "Aharen-san wa Hakarenai",
